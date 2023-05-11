@@ -2,6 +2,8 @@ package app;
 
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Logger;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class Main {
     Product productTwelve = new Product("Calzini", "Baby", 4.99);
 
     // Riempio Products
+    // esiste un metodo per aggiungere tutti i prodotti in un unico passaggio?
     products.add(productOne);
     products.add(productTwo);
     products.add(productThree);
@@ -41,31 +44,55 @@ public class Main {
     products.add(productEleven);
     products.add(productTwelve);
 
-    /* ********** ORDINI ********** */
-
-    /* ********** ESERCIZIO 1 ********** */
+    /**
+     * ********** *********** **********
+     * ********** ESERCIZIO 1 **********
+     * ********** *********** **********
+     */
     List<String> listBooks = products.stream().filter(book -> book.getCategory().equals("Books"))
         .filter(book -> book.getPrice() > 100).map(Product::getName).toList();
     logger.info("Book con prezzo maggiore a 100: " + listBooks);
 
-    /* ********** ESERCIZIO 2 ********** */
+    /**
+     * ********** *********** **********
+     * ********** ESERCIZIO 2 **********
+     * ********** *********** **********
+     */
+    LocalDate orderDate = LocalDate.now();
+    LocalDate deliveryDateOne = orderDate.plusDays(2);
+    LocalDate deliveryDateTwo = orderDate.plusDays(4);
 
     /* ********** CLIENTI ********** */
-    // Customer antonio = new Customer("Antonio", 3);
-    // Customer ilaria = new Customer("Ilaria", 5);
-    // Customer schia = new Customer("Schia", 4);
-    // Customer nina = new Customer("Nina", 9);
-    // Customer leon = new Customer("Leon", 18);
+    Customer antonio = new Customer("Antonio", 3);
+    Customer ilaria = new Customer("Ilaria", 5);
+    Customer schia = new Customer("Schia", 4);
+    Customer nina = new Customer("Nina", 9);
+    Customer leon = new Customer("Leon", 18);
 
     /* ********** ORDINI ********** */
-    // Order orderOne = new Order("In elaborazione", null, null, products, schia)
+    List<Order> orders = new ArrayList<>();
+    Order orderOne = new Order("In elaborazione", orderDate, deliveryDateOne, products, schia);
+    Order orderTwo = new Order("Spedito", orderDate, deliveryDateTwo, products, nina);
 
-    /* ********** ESERCIZIO 3 ********** */
+    orders.add(orderOne);
+    orders.add(orderTwo);
+
+    List<Order> listBaby = orders.stream()
+        .filter(order -> order.getProducts().stream().anyMatch(product -> product.getCategory().equals("Baby")))
+        .toList();
+
+    logger.info("Boys con sconto del 10%: " + listBaby);
+
+    /**
+     * ********** *********** **********
+     * ********** ESERCIZIO 3 **********
+     * ********** *********** **********
+     */
     List<Product> listBoys = products.stream().filter(boy -> boy.getCategory().toString().equals("Boys")).map(boy -> {
       boy.setPrice(boy.getPrice() - ((Math.round(boy.getPrice() * 10) / 100)));
       return boy;
     }).toList();
     logger.info("Boys con sconto del 10%: " + listBoys);
-
+    logger.info("");
   }
 }
